@@ -24,10 +24,20 @@ spawn_interval = 120
 MAX_ENEMIES = 8
 max_speed = 2.5
 
+font = pygame.font.Font('freesansbold.ttf', 32)
+
+text_x = 10
+text_y = 10
+
+def display_score(x, y):
+    score = font.render("Score: " + str(player_score), True, (255, 255, 255))
+    screen.blit(score, (x, y))
+
+
+
 def is_collision(bullet, enemy):
     distance = math.sqrt((bullet.x - enemy.x) ** 2 + (bullet.y - enemy.y) ** 2)
     return distance < 27
-
 
 running = True
 while running:
@@ -65,5 +75,6 @@ while running:
     player.display_bullets(screen)
     for enemy in enemies:
         enemy.display(screen)
+    display_score(text_x, text_y)
 
     pygame.display.update()
