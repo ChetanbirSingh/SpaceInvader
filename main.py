@@ -1,6 +1,6 @@
 import pygame
 import math
-
+import random
 from Entities.player import Player
 from Entities.enemy import Enemy
 
@@ -8,59 +8,62 @@ pygame.init()
 
 screen_width = 1000
 screen_height = 700
-
 player_score = 0
 
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Space Invaders")
 icon = pygame.image.load('Assets/Img/logo.png')
 pygame.display.set_icon(icon)
-
 background = pygame.image.load('Assets/Img/background.jpg')
 
-# Create player instance
-player = Player(img_path='Assets/Img/player.png', x=370, y=580, screen_width=screen_width, screen_height=screen_height)
+player = Player('Assets/Img/player.png', 370, 580, screen_width, screen_height)
 
-# Create enemy instance
-enemy = Enemy(img_path='Assets/Img/Enemies/enemy.png', screen_width=screen_width, screen_height=screen_height)
+enemies = []
+spawn_timer = 0
+spawn_interval = 120
+MAX_ENEMIES = 8
+max_speed = 2.5
 
-
-def is_collision(player, enemy):
-    distance = math.sqrt(math.pow((bullet.x - enemy.x), 2) + math.pow(bullet.y - enemy.y, 2))
+def is_collision(bullet, enemy):
+    distance = math.sqrt((bullet.x - enemy.x) ** 2 + (bullet.y - enemy.y) ** 2)
     return distance < 27
+
 
 running = True
 while running:
-    # Process all events (keyboard, mouse, window close, etc.)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False  # Exit the game loop when the window is closed
-        player.handle_input(event)  # Update player velocity based on key events
+            running = False
+        player.handle_input(event)
 
-    # Update game state
-    player.update_position()  # Move the player according to current velocity
-
-    screen.fill((25, 23, 25))
-    # Background Image
-    screen.blit(background, (0, 0))
-    player.display(screen)     # Draw the player on the screen
-
-    # Bullets
     player.update_position()
     player.update_bullets()
+
+    # Make spawning random and harder with score
+    spawn_timer += 1
+    if spawn_timer >= spawn_interval and len(enemies) < MAX_ENEMIES:
+        speed = min(0.5 + player_score * 0.2, max_speed)
+        enemies.append(Enemy('Assets/Img/Enemies/enemy.png', screen_width, screen_height,
+                             speed=speed))  # speed scales with score
+        spawn_timer = random.randint(0, 60)  # randomize next spawn a bit
+
+    for enemy in enemies[:]:
+        enemy.update_position()
+
+        for bullet in player.bullets[:]:
+            if is_collision(bullet, enemy):
+                player.bullets.remove(bullet)
+                player_score += 1
+                print("Score:", player_score)
+                enemies.remove(enemy)
+                break
+
+    # Draw everything
+    screen.fill((25, 23, 25))
+    screen.blit(background, (0, 0))
     player.display(screen)
     player.display_bullets(screen)
+    for enemy in enemies:
+        enemy.display(screen)
 
-    # Collision
-    for bullet in player.bullets[:]:  # iterate over a copy to safely remove
-        bullet.update_position()
-        if is_collision(bullet, enemy):
-            player.bullets.remove(bullet)
-            player_score += 1
-            print(player_score)
-            enemy.re_spawn()
-
-    enemy.display(screen)      # Draw the enemy on the screen
-    enemy.update_position()    # Move the enemy
-
-    pygame.display.update()    # Refresh the display with the new frame
+    pygame.display.update()
