@@ -8,12 +8,12 @@ screen_height = 600
 
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Space Invaders")
-icon = pygame.image.load('img/logo.png')
+icon = pygame.image.load('Assets/Img/logo.png')
 
 pygame.display.set_icon(icon)
 
 # Create player instance
-player = Player(img_path='img/player.png', x=370, y=480, screen_width=screen_width, screen_height=screen_height)
+player = Player(img_path='Assets/Img/player.png', x=370, y=480, screen_width=screen_width, screen_height=screen_height)
 
 running = True
 while running:
