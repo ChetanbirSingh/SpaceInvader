@@ -1,5 +1,6 @@
 import pygame
 from Entities.player import Player
+from Entities.enemy import Enemy
 
 pygame.init()
 
@@ -15,6 +16,9 @@ pygame.display.set_icon(icon)
 # Create player instance
 player = Player(img_path='Assets/Img/player.png', x=370, y=480, screen_width=screen_width, screen_height=screen_height)
 
+# Create enemy instance
+enemy = Enemy(img_path='Assets/Img/Enemies/enemy.png', screen_width=screen_width, screen_height=screen_height)
+
 running = True
 while running:
     # Process all events (keyboard, mouse, window close, etc.)
@@ -29,4 +33,8 @@ while running:
     # Render the frame
     screen.fill((25, 23, 25))
     player.display(screen)     # Draw the player on the screen
+
+    enemy.display(screen)      # Draw the enemy on the screen
+    enemy.update_position()    # Move the enemy
+
     pygame.display.update()    # Refresh the display with the new frame
