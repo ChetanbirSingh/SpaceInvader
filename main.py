@@ -1,4 +1,6 @@
 import pygame
+
+from Entities.bullet import Bullet
 from Entities.player import Player
 from Entities.enemy import Enemy
 
@@ -35,6 +37,12 @@ while running:
     # Background Image
     screen.blit(background, (0, 0))
     player.display(screen)     # Draw the player on the screen
+
+    # Bullets
+    player.update_position()
+    player.update_bullets()
+    player.display(screen)
+    player.display_bullets(screen)
 
     enemy.display(screen)      # Draw the enemy on the screen
     enemy.update_position()    # Move the enemy
