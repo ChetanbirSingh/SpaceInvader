@@ -74,6 +74,9 @@ while running:
                 player.bullets.remove(bullet)
                 player_score += 1
                 enemies.remove(enemy)
+                # Play Sound
+                mixer_sound = mixer.Sound('Assets/Audio/explosion.wav')
+                mixer_sound.play()
                 break
 
     # Draw everything
