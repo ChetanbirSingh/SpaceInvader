@@ -41,8 +41,8 @@ while running:
                 playerX_velocity += speed
 
         # If keystroke has been released
-        if event.type == pygame.KEYUP:
-            playerX_change = 0
+        elif event.type == pygame.KEYUP:
+            playerX_velocity = 0
 
     # Move the player
     # Update player position by its change value
