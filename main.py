@@ -13,7 +13,7 @@ pygame.display.set_icon(icon)
 playerImg = pygame.image.load('img/player.png')
 playerX = 370
 playerY = 480
-playerX_veloctiy = 0
+playerX_velocity = 0
 
 speed = 0.2
 
@@ -36,9 +36,9 @@ while running:
             if event.key == pygame.K_LEFT:
                 # Instead of moving once, set a "velocity"
                 # This makes player move continuously each frame
-                playerX_veloctiy -= speed
+                playerX_velocity -= speed
             elif event.key == pygame.K_RIGHT:
-                playerX_veloctiy += speed
+                playerX_velocity += speed
 
         # If keystroke has been released
         if event.type == pygame.KEYUP:
@@ -48,7 +48,7 @@ while running:
     # Update player position by its change value
     # This runs every frame (~60 times per second),
     # so the player moves smoothly while the key is held
-    playerX += playerX_veloctiy
+    playerX += playerX_velocity
 
     # Change background color
     screen.fill((25, 23, 25))
