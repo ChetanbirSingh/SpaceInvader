@@ -19,7 +19,6 @@ background = pygame.image.load('Assets/Img/background.jpg')
 
 # Background music
 mixer.music.load('Assets/Audio/background.wav')
-# Play music on loop
 mixer.music.play(-1)
 
 player = Player('Assets/Img/player.png', 370, 580, screen_width, screen_height)
@@ -32,16 +31,45 @@ max_speed = 2.5
 
 font = pygame.font.Font('freesansbold.ttf', 32)
 
-text_x = 10
-text_y = 10
 
-def display_score(x, y):
+def display_score():
     score = font.render("Score: " + str(player_score), True, (255, 255, 255))
-    screen.blit(score, (x, y))
+    screen.blit(score, (10, 10))
+
+
+def game_over_screen():
+    text = font.render("GAME OVER - Press R to Restart", True, (255, 0, 0))
+    # Center the text on the screen
+    text_rect = text.get_rect(center=(screen_width // 2, screen_height // 2))
+    # Draw the text
+    screen.fill((0, 0, 0))  # optional: clear screen or keep background
+    screen.blit(text, text_rect)
+    pygame.display.update()  # show it
+
+    while True:
+        mixer.music.pause()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    return True  # restart the game
 
 def is_collision(sprite1, sprite2):
     distance = math.sqrt((sprite1.x - sprite2.x) ** 2 + (sprite1.y - sprite2.y) ** 2)
     return distance < 27
+
+
+def reset_game():
+    global player, enemies, player_score, spawn_timer
+    player.x = 370
+    player.y = 580
+    player.bullets.clear()
+    enemies.clear()
+    player_score = 0
+    spawn_timer = 0
+    mixer.music.unpause()
 
 running = True
 while running:
@@ -53,30 +81,30 @@ while running:
     player.update_position()
     player.update_bullets()
 
-    # Make spawning random and harder with score
+    # Spawn enemies randomly
     spawn_timer += 1
     if spawn_timer >= spawn_interval and len(enemies) < MAX_ENEMIES:
         speed = min(0.5 + player_score * 0.2, max_speed)
-        enemies.append(Enemy('Assets/Img/Enemies/enemy.png', screen_width, screen_height,
-                             speed=speed))  # speed scales with score
-        spawn_timer = random.randint(0, 60)  # randomize next spawn a bit
+        enemies.append(Enemy('Assets/Img/Enemies/enemy.png', screen_width, screen_height, speed=speed))
+        spawn_timer = random.randint(0, 60)
 
+    # Update enemies and check collisions
     for enemy in enemies[:]:
         enemy.update_position()
         if enemy.y > screen_height:
             enemies.remove(enemy)
 
         elif is_collision(player, enemy):
-            running = False
+            if game_over_screen():  # Show game over and wait for restart
+                reset_game()
+                break  # exit enemy loop to restart properly
 
         for bullet in player.bullets[:]:
             if is_collision(bullet, enemy):
                 player.bullets.remove(bullet)
                 player_score += 1
                 enemies.remove(enemy)
-                # Play Sound
-                mixer_sound = mixer.Sound('Assets/Audio/explosion.wav')
-                mixer_sound.play()
+                mixer.Sound('Assets/Audio/explosion.wav').play()
                 break
 
     # Draw everything
@@ -86,5 +114,5 @@ while running:
     player.display_bullets(screen)
     for enemy in enemies:
         enemy.display(screen)
-    display_score(text_x, text_y)
+    display_score()
     pygame.display.update()
