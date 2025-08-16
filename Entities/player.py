@@ -1,4 +1,5 @@
 import pygame
+from pygame import mixer
 from Entities.bullet import Bullet
 from Entities.entity import Entity
 
@@ -16,15 +17,20 @@ class Player(Entity):
                 self.velocity = self.speed
             # Bullets
             elif event.key == pygame.K_SPACE:
-                # Shoot a bullet from the center-top of the player
-                bullet_x = self.x + self.image.get_width() // 2
-                bullet_y = self.y
-                self.bullets.append(Bullet(bullet_x, bullet_y, self.screen_width, self.screen_height))
-
+                self.shoot()
 
         elif event.type == pygame.KEYUP:
             if event.key in (pygame.K_LEFT, pygame.K_RIGHT):
                 self.velocity = 0
+
+    def shoot(self):
+        # Shoot a bullet from the center-top of the player
+        bullet_x = self.x + self.image.get_width() // 2
+        bullet_y = self.y
+        self.bullets.append(Bullet(bullet_x, bullet_y, self.screen_width, self.screen_height))
+        # Play sound
+        mixer_sound = mixer.Sound('Assets/Audio/laser.wav')
+        mixer_sound.play()
 
     def update_position(self):
         self.x += self.velocity
