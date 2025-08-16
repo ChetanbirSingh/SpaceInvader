@@ -50,6 +50,13 @@ while running:
     # so the player moves smoothly while the key is held
     playerX += playerX_velocity
 
+    # Prevent the player from moving off the left edge
+    if playerX <= 0:
+        playerX = 0
+    # Prevent the player from moving off the right edge
+    elif playerX > 800 - playerImg.get_width():
+        playerX = 800 - playerImg.get_width()
+
     # Change background color
     screen.fill((25, 23, 25))
 
