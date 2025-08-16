@@ -21,6 +21,7 @@ class Player(Entity):
                 bullet_y = self.y
                 self.bullets.append(Bullet(bullet_x, bullet_y, self.screen_width, self.screen_height))
 
+
         elif event.type == pygame.KEYUP:
             if event.key in (pygame.K_LEFT, pygame.K_RIGHT):
                 self.velocity = 0

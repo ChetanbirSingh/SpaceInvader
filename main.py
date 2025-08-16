@@ -1,4 +1,5 @@
 import pygame
+from pygame import mixer
 import math
 import random
 from Entities.player import Player
@@ -15,6 +16,11 @@ pygame.display.set_caption("Space Invaders")
 icon = pygame.image.load('Assets/Img/logo.png')
 pygame.display.set_icon(icon)
 background = pygame.image.load('Assets/Img/background.jpg')
+
+# Background music
+mixer.music.load('Assets/Audio/background.wav')
+# Play music on loop
+mixer.music.play(-1)
 
 player = Player('Assets/Img/player.png', 370, 580, screen_width, screen_height)
 
@@ -33,10 +39,8 @@ def display_score(x, y):
     score = font.render("Score: " + str(player_score), True, (255, 255, 255))
     screen.blit(score, (x, y))
 
-
-
-def is_collision(bullet, enemy):
-    distance = math.sqrt((bullet.x - enemy.x) ** 2 + (bullet.y - enemy.y) ** 2)
+def is_collision(sprite1, sprite2):
+    distance = math.sqrt((sprite1.x - sprite2.x) ** 2 + (sprite1.y - sprite2.y) ** 2)
     return distance < 27
 
 running = True
@@ -59,12 +63,16 @@ while running:
 
     for enemy in enemies[:]:
         enemy.update_position()
+        if enemy.y > screen_height:
+            enemies.remove(enemy)
+
+        elif is_collision(player, enemy):
+            running = False
 
         for bullet in player.bullets[:]:
             if is_collision(bullet, enemy):
                 player.bullets.remove(bullet)
                 player_score += 1
-                print("Score:", player_score)
                 enemies.remove(enemy)
                 break
 
@@ -76,5 +84,4 @@ while running:
     for enemy in enemies:
         enemy.display(screen)
     display_score(text_x, text_y)
-
     pygame.display.update()
