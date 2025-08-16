@@ -2,7 +2,7 @@ import pygame
 from Entities.entity import Entity
 
 class Player(Entity):
-    def __init__(self, img_path, x, y, screen_width, screen_height, velocity=0, speed=0.2):
+    def __init__(self, img_path, x, y, screen_width, screen_height, velocity=0, speed=1):
         super().__init__(img_path, x, y, screen_width, screen_height, speed)
         self.velocity = velocity
 

@@ -4,17 +4,18 @@ from Entities.enemy import Enemy
 
 pygame.init()
 
-screen_width = 800
-screen_height = 600
+screen_width = 1000
+screen_height = 700
 
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Space Invaders")
 icon = pygame.image.load('Assets/Img/logo.png')
-
 pygame.display.set_icon(icon)
 
+background = pygame.image.load('Assets/Img/background.jpg')
+
 # Create player instance
-player = Player(img_path='Assets/Img/player.png', x=370, y=480, screen_width=screen_width, screen_height=screen_height)
+player = Player(img_path='Assets/Img/player.png', x=370, y=580, screen_width=screen_width, screen_height=screen_height)
 
 # Create enemy instance
 enemy = Enemy(img_path='Assets/Img/Enemies/enemy.png', screen_width=screen_width, screen_height=screen_height)
@@ -30,8 +31,9 @@ while running:
     # Update game state
     player.update_position()  # Move the player according to current velocity
 
-    # Render the frame
     screen.fill((25, 23, 25))
+    # Background Image
+    screen.blit(background, (0, 0))
     player.display(screen)     # Draw the player on the screen
 
     enemy.display(screen)      # Draw the enemy on the screen
