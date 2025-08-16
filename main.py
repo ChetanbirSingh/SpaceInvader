@@ -31,7 +31,6 @@ max_speed = 2.5
 
 font = pygame.font.Font('freesansbold.ttf', 32)
 
-
 def display_score():
     score = font.render("Score: " + str(player_score), True, (255, 255, 255))
     screen.blit(score, (10, 10))
